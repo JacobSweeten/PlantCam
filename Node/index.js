@@ -1,4 +1,5 @@
 const NodeWebcam = require("node-webcam");
+const ini = require("ini");
 
 var opts = {
 	width: 1280,

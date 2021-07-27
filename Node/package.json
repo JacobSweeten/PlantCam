@@ -1,0 +1,7 @@
+{
+	"name": "plantcam",
+	"dependencies": {
+		"node-webcam": "^0.8.0",
+		"ini": "^2.0.0"
+	}
+}
