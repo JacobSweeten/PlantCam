@@ -1,0 +1,13 @@
+[Unit]
+Description=PlantCam
+After=network.target
+
+[Service]
+Type=simple
+User=plantcam
+WorkingDirectory=/plantcam
+ExecStart=node /plantcam/index.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
