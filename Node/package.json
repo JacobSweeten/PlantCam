@@ -2,6 +2,7 @@
 	"name": "plantcam",
 	"dependencies": {
 		"node-webcam": "^0.8.0",
-		"ini": "^2.0.0"
+		"ini": "^2.0.0",
+		"adm-zip": "^0.5.5"
 	}
 }
