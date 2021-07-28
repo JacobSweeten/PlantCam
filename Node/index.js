@@ -1,5 +1,6 @@
 const NodeWebcam = require("node-webcam");
 const ini = require("ini");
+const fs = require("fs");
 
 var opts = {
 	width: 1280,
@@ -11,11 +12,72 @@ var opts = {
 	output: "jpeg",
 	device: false,
 	callbackReturn: "location",
-	verbose: true
+	verbose: false
 };
+
+try
+{
+	var configFile = fs.readFileSync("./config.ini", "utf-8");
+}
+catch(e)
+{
+	console.error("config.ini does not exist. Creating.");
+	fs.writeFileSync("[PlantCam]\nInterval = 86400\nSetTime = 12:00\nDir = ./images\nMode = SetTime");
+	process.exit(1);
+}
+
+try
+{
+	var config = ini.parse(configFile);
+}
+catch(e)
+{
+	console.error("Bad config file.");
+	process.exit(1);
+}
+
+if(!fs.existsSync(config.PlantCam.Dir))
+{
+	fs.mkdirSync(config.PlantCam.Dir);
+}
 
 var webcam = NodeWebcam.create(opts);
 
-webcam.capture("Test", (err, data) => {
-	// Nothing, I guess
-});
+function takePicture()
+{
+	var dateTime = new Date().toISOString();
+	var dateTime = dateTime.replace(/T/, '_').replace(/\..+/, '');
+	
+	webcam.capture(config.PlantCam.Dir + "/" +  dateTime + ".jpeg", (err, data) => {
+		if(err)
+		{
+			console.log(err);
+			process.exit(1);
+		}
+	});
+	
+}
+
+var doWait = false;
+
+if(config.PlantCam.Mode == "Interval")
+{
+	setInterval(() => {
+		takePicture();
+	}, config.PlantCam.Interval * 1000);
+}
+else if(config.PlantCam.Mode == "SetTime")
+{
+	setInterval(() => {
+		var time = new Date().toLocaleTimeString('en', {hour12: false}).split(":").slice(0, 2).join(":");
+		if(time === config.PlantCam.SetTime)
+		{
+			if(!doWait)
+			{
+				takePicture();
+				doWait = true;
+				setTimeout(() => {doWait = false;}, 60000);
+			}
+		}
+	}, 1000);
+}
