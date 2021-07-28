@@ -27,7 +27,7 @@ try
 catch(e)
 {
 	console.error("config.ini does not exist. Creating.");
-	fs.writeFileSync("[PlantCam]\nInterval = 86400\nSetTime = 19:38\nMode = SetTime\n\n[HTTP]\nUsePassword = true\nUsername = PlantCam # Change these if you really care\nPassword = PlantCam", "utf-8");
+	fs.writeFileSync("config.ini", "[PlantCam]\nInterval = 86400\nSetTime = 19:38\nMode = SetTime\n\n[HTTP]\nUsePassword = true\nUsername = PlantCam # Change these if you really care\nPassword = PlantCam", "utf-8");
 	process.exit(1);
 }
 
